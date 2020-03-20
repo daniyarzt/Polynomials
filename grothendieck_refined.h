@@ -1,8 +1,7 @@
-#include "polynomial.h"
 
 #define forn(i, n) for (int i = 1; i <= n; i++)
 
-static const bool WONNAPRINT = true;
+static const bool WONNAPRINT = false;
 using namespace std;
 
 struct Grothendieck_refined
