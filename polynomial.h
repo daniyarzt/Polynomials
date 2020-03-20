@@ -19,7 +19,7 @@ struct Polynomial
     void normalize()
     {
         map < map < int, int >, ll > q;
-        for (auto it : q)
+        for (auto it : p)
         {
             if (it.second == 0)
                 continue;
