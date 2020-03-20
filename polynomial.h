@@ -78,6 +78,7 @@ struct Polynomial
             cout << ")";
             tmp = true;
         }
+        cout << endl;
     }
 
     void operator += (Polynomial q)
@@ -114,3 +115,4 @@ struct Polynomial
         return p == q.p;
     }
 };
+
