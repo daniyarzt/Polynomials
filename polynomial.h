@@ -16,6 +16,17 @@ struct Polynomial
         p[map < int, int > ()] = _val;
     };
 
+    map < int, int > normalize(map < int, int > ch)
+    {
+        map < int, int > character;
+        for (auto tmp : ch)
+        {
+            if (tmp.second == 0)
+                continue;
+            character[tmp.first] += tmp.second;
+        }
+        return character;
+    }
     void normalize()
     {
         map < map < int, int >, ll > q;
@@ -23,21 +34,14 @@ struct Polynomial
         {
             if (it.second == 0)
                 continue;
-            map < int, int > character;
-            for (auto tmp : it.first)
-            {
-                if (tmp.second == 0)
-                    continue;
-                character[tmp.first] += tmp.second;
-            }
-            q[character] += it.second;
+            q[normalize(it.first)] += it.second;
         }
         p = q;
     }
 
     void add(map < int, int > character, ll val)
     {
-        p[character] += val;
+        p[normalize(character)] += val;
     }
 
     bool isPositive()
