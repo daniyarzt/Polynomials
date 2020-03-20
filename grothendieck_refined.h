@@ -117,6 +117,7 @@ struct Grothendieck_refined
                 cells.pb({i, j});
         }
         rec(0);
+        ans.normalize();
         return ans;
     }
 };
