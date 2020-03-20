@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 
+#define pb push_back
 typedef long long ll;
 
 using namespace std;
@@ -14,6 +15,25 @@ struct Polynomial
     {
         p[map < int, int > ()] = _val;
     };
+
+    void normalize()
+    {
+        map < map < int, int >, ll > q;
+        for (auto it : q)
+        {
+            if (it.second == 0)
+                continue;
+            map < int, int > character;
+            for (auto tmp : it.first)
+            {
+                if (tmp.second == 0)
+                    continue;
+                character[tmp.first] += tmp.second;
+            }
+            q[character] += it.second;
+        }
+        p = q;
+    }
 
     void add(map < int, int > character, ll val)
     {
@@ -89,6 +109,8 @@ struct Polynomial
 
     bool operator == (Polynomial q)
     {
+        normalize();
+        q.normalize();
         return p == q.p;
     }
 };
