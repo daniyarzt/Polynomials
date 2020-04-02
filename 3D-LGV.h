@@ -74,6 +74,8 @@ struct Paths
                 character[id]++;
                 dfs2(x + it.dx, y + it.dy, z + it.dz);
                 character[id]--;
+                if (character[id] == 0)
+                    character.erase(id);
             }
             else
             {
