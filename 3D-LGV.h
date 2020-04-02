@@ -47,7 +47,7 @@ struct Paths
             int tx = x - it.dx;
             int ty = y - it.dy;
             int tz = z - it.dz;
-            if (it.canUse(tx, ty, tz))
+            //if (it.canUse(tx, ty, tz))
                 dfs1(tx, ty, tz);
         }
     }
@@ -66,8 +66,8 @@ struct Paths
         }
         for (auto it : e)
         {
-            if (!it.canUse(x, y, z))
-                continue;
+            //if (!it.canUse(x, y, z))
+            //    continue;
             if (it.isWeighted)
             {
                 int id;
@@ -255,25 +255,27 @@ struct TreeDimLGV
         }
         addEdge(0, 1, 0, WALL, false, M);
         addEdge(1, 1, 0, WALL, true, M);
-        addEdge(0, 0, -1, FLOOR, true, M + 1);
-        addEdge(-1, 0, -1, FLOOR, false, M + 1);
+        addEdge(0, 0, 1, FLOOR, true, M + 1);
+        addEdge(-1, 0, 1, FLOOR, false, M + 1);
     }
     void randomInit(int n)
     {
         int lastX = 0, lastZ = 0;
         for (int i = 0; i < n; i++)
         {
-            lastX += rand() % 2 + 1;
-            lastZ += rand() % 2;
+            lastX += rand() % 3 + 1;
+            lastZ += rand() % 3;
             Ax.pb(lastX);
             Ay.pb(0);
             Az.pb(lastZ);
         }
-        int M = 3;
+        //lastX = 0;
+        //lastZ = 0;
+        int M = 5;
         for (int i = 0; i < n; i++)
         {
-            lastX += rand() % 2 + 1;
-            lastZ += rand() % 2;
+            lastX += rand() % 3 + 1;
+            lastZ += rand() % 3;
             Bx.pb(lastX);
             By.pb(M);
             Bz.pb(lastZ);
