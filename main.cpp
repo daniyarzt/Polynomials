@@ -28,10 +28,10 @@ int main()
         pos = false;
         TreeDimLGV Lattice;
         Lattice.randomInit(3);
-    Lattice.addEdge(0, 0, 1, FLOOR, true, 1);
-    Lattice.addEdge(1, 0, 1, FLOOR, true, 10);
-    Lattice.addEdge(1, 1, 0, WALL, true, 20);
-    Lattice.addEdge(0, 1, 0, WALL, true, 30);
+        Lattice.addEdge(0, 0, 1, FLOOR, true, 1);
+        Lattice.addEdge(1, 0, 1, FLOOR, true, 10);
+        Lattice.addEdge(1, 1, 0, WALL, true, 20);
+        Lattice.addEdge(0, 1, 0, WALL, true,   30);
         Polynomial res = Lattice.LGV();
         //res.print();
         if (pos = res.isPositive())
