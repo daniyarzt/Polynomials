@@ -4,3 +4,5 @@
 #include "det.h"
 #include "g_det_formula.h"
 #include "3D-LGV.h"
+#include "grassman.h"
+#include "bialternant.h"
