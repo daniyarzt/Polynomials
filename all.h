@@ -6,3 +6,4 @@
 #include "3D-LGV.h"
 #include "grassman.h"
 #include "bialternant.h"
+#include "fancyformula.h"
