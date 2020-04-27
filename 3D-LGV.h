@@ -1,7 +1,7 @@
 
 static const int FLOOR = 0;
 static const int WALL = 1;
-static const int K = 20;
+static const int K = 10;
 
 struct Edge
 {
@@ -47,7 +47,7 @@ struct Paths
             int tx = x - it.dx;
             int ty = y - it.dy;
             int tz = z - it.dz;
-            //if (it.canUse(tx, ty, tz))
+            if (it.canUse(tx, ty, tz))
                 dfs1(tx, ty, tz);
         }
     }
@@ -58,16 +58,13 @@ struct Paths
             return;
         if (x == fx && y == fy && z == fz)
         {
-            //for (auto it : path)
-            //    cout << "(" << it.dx << "," << it.dy << "," << it.dz << ") ";
-            //cout << endl;
             res.add(character, 1);
             return;
         }
         for (auto it : e)
         {
-            //if (!it.canUse(x, y, z))
-            //    continue;
+            if (!it.canUse(x, y, z))
+                continue;
             if (it.isWeighted)
             {
                 int id;
@@ -93,101 +90,12 @@ struct Paths
     }
 };
 
-struct PathsFast
-{
-    int fx, fy, fz;
-    vector < Edge > e;
-    map < int, map < int, map < int, bool > > > was, vis;
-    map < int, map < int, map < int, Polynomial > > > dp;
-    Polynomial res;
-    map < int, int > character;
-    vector <Edge > path;
-    vector < pair < int, pair < int, int > > > ord;
-
-    PathsFast () {}
-
-    PathsFast (int _fx, int _fy, int _fz, const vector < Edge > & _e): fx(_fx), fy(_fy), fz(_fz), e(_e) {}
-
-    bool isInside(int x, int y, int z)
-    {
-        return abs(x) < K && abs(y) < K && abs(z) < K;
-    }
-
-    void dfs1(int x, int y, int z)
-    {
-        if (!isInside(x, y, z))
-            return;
-        if (was[x][y][z])
-            return;
-        was[x][y][z] = true;
-        for (auto it : e)
-        {
-            int tx = x - it.dx;
-            int ty = y - it.dy;
-            int tz = z - it.dz;
-            if (it.canUse(tx, ty, tz))
-                dfs1(tx, ty, tz);
-        }
-    }
-
-    void dfs2(int x, int y, int z)
-    {
-        if (!was[x][y][z] || vis[x][y][z])
-            return;
-        vis[x][y][z] = true;
-        for (auto it : e)
-        {
-            if (it.canUse(x, y, z))
-            {
-                dfs2(x + it.dx, y + it.dy, z + it.dz);
-            }
-        }
-        ord.pb({x, {y, z}});
-    }
-    void calc(int x1, int y1, int z1)
-    {
-        dfs2(x1, y1, z1);
-        reverse(all(ord));
-        dp[x1][y1][z1] = Polynomial(1);
-        for (auto pt : ord)
-        {
-            int x = pt.first;
-            int y = pt.second.first;
-            int z = pt.second.second;
-            for (auto it : e)
-            {
-                if (!it.canUse(x, y, z))
-                    continue;
-                if (it.isWeighted)
-                {
-                    int id;
-                    if (it.type == FLOOR)
-                        id = it.firstID + z - 1;
-                    else
-                        id = it.firstID + y;
-                    Polynomial cur;
-                    map < int, int > mp;
-                    mp[id]++;
-                    cur.p[mp]++;
-                    cur *= dp[x][y][z];
-                    dp[x + it.dx][y + it.dy][z + it.dz] += cur;
-                }
-                else
-                    dp[x + it.dx][y + it.dy][z + it.dz] += dp[x][y][z];
-            }
-        }
-        res = dp[fx][fy][fz];
-        cerr << "Shika supa hard" << endl;
-    }
-};
-
 Polynomial W(int x1, int y1, int z1, int x2, int y2, int z2, const vector < Edge > & e)
 {
     Paths P(x2, y2, z2, e);
     P.dfs1(x2, y2, z2);
     P.dfs2(x1, y1, z1);
     P.res.normalize();
-    cout << "W" << x1 << ' '<< y1 << ' '<< z1 << ' ' << x2 << ' ' << y2 << ' ' << z2 << ' ' << "Is Found" << endl;
     return P.res;
 }
 
@@ -227,6 +135,7 @@ struct TreeDimLGV
                 A[i][j] = W(Ax[i], Ay[i], Az[i], Bx[j], By[j], Bz[j], e);
             }
         }
+        cout << "!!!" << endl;
         for (int i = 0; i < n; i++)
         {
             for (int j = 0; j < n; j++)
@@ -234,6 +143,16 @@ struct TreeDimLGV
             cout << endl;
         }
         return det(A);
+    }
+
+    void print()
+    {
+        cout << "Sources: " << endl;
+        for (int i = 0; i < (int)Ax.size(); i++)
+            cout << Ax[i] << ' '<< Ay[i] << ' ' << Az[i] << endl;
+        cout << "Sinks: " << endl;
+        for (int i = 0; i < (int)Bx.size(); i++)
+            cout << Bx[i] << ' ' << By[i] << ' ' << Bz[i] << endl;
     }
 
     void GrothendieckInit(string lambda, string mu, int M)
@@ -257,6 +176,88 @@ struct TreeDimLGV
         addEdge(1, 1, 0, WALL, true, M);
         addEdge(0, 0, 1, FLOOR, true, M + 1);
         addEdge(-1, 0, 1, FLOOR, false, M + 1);
+    }
+
+    void checkItOut()
+    {
+        int n = (int)Ax.size();
+        vector < vector < Polynomial > > A(n, vector < Polynomial > (n));
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                A[i][j] = W(Ax[i], Ay[i], Az[i], Bx[j], By[j], Bz[j], e);
+
+        cout << "Matrix:" << endl;
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+                cout << A[i][j].p.size() << ' ';
+            cout << endl;
+        }
+
+        vector < int > sets;
+        for (int mask = 1; mask < (1 << n); mask++)
+            if (__builtin_popcount(mask) <= 4)
+                sets.pb(mask);
+
+        int numberOfPairs = 0, currentPair = 0;
+        for (auto mask1 : sets)
+            for (auto mask2 : sets)
+                numberOfPairs += bool(__builtin_popcount(mask1) == __builtin_popcount(mask2));
+
+        for (auto mask1 : sets)
+        {
+            for (auto mask2 : sets)
+            {
+                int m = __builtin_popcount(mask1);
+                if (m != __builtin_popcount(mask2))
+                    continue;
+
+                currentPair++;
+
+                vector < int > a, b;
+                for (int i = 0; i < n; i++)
+                    if (mask1 & (1 << i))
+                        a.pb(i);
+                for (int i = 0; i < n; i++)
+                    if (mask2 & (1 << i))
+                        b.pb(i);
+
+                vector < vector < Polynomial > > B(m, vector < Polynomial > (m));
+                for (int i = 0; i < m; i++)
+                    for (int j = 0; j < m; j++)
+                        B[i][j] = A[a[i]][b[j]];
+
+                Polynomial cur = det(B);
+                if (cur.p.empty())
+                    cout << "Empty" << endl;
+                else if (cur.isPositive())
+                    cout << "Positive!" << endl;
+                else
+                {
+                        cout << "Negative!" << endl;
+                        cout << "Edges: " << endl;
+                        for (auto it : e)
+                        {
+                            cout << it.dx << ' ' << it.dy << ' ' << it.dz << ' ';
+                            if (it.type == WALL)
+                                cout << "WALL" << endl;
+                            else
+                                cout << "FLOOR" << endl;
+                        }
+                        cout << endl;
+                        cout << "Sources: " << endl;
+                        for (auto id : a)
+                            cout << Ax[id] << ' ' << Ay[id] << ' ' << Az[id] << endl;
+                        cout << endl << "Sinks: " << endl;
+                        for (auto id : b)
+                            cout << Bx[id] << ' ' << By[id] << ' ' << Bz[id] << endl;
+                        cout << endl;
+                        return;
+                }
+                cout << "(" << currentPair << "/" << numberOfPairs << ")" << endl;
+            }
+        }
+        cout << "Verdict = All positive!!!" << endl;
     }
     void randomInit(int n)
     {
@@ -287,3 +288,86 @@ struct TreeDimLGV
             cout << Bx[i] << ' ' << By[i] << ' ' << Bz[i] << endl;
     }
 };
+
+void straightCheck(vector < int > Ax, int y, vector < int > Az, TreeDimLGV graph)
+{
+    vector < int > xmasks, zmasks;
+    for (int mask = 1; mask < (1 << (int)Ax.size()); mask++)
+        if (__builtin_popcount(mask) <= 4)
+            xmasks.pb(mask);
+    for (int mask = 1; mask < (1 << (int)Az.size()); mask++)
+        if (__builtin_popcount(mask) <= 4)
+            zmasks.pb(mask);
+    vector < pair < int, pair < int, int > > > test;
+    for (auto xmask : xmasks)
+    {
+        for (auto mask1 : zmasks)
+        {
+            if (__builtin_popcount(xmask) != __builtin_popcount(mask1))
+                continue;
+            for (auto mask2 : zmasks)
+            {
+                if (__builtin_popcount(mask2) != __builtin_popcount(mask1))
+                    continue;
+                test.pb({xmask, {mask1, mask2}});
+            }
+        }
+    }
+    for (int id = 0; id < (int)test.size(); id++)
+    {
+        auto it = test[id];
+        vector < int > xs, z1, z2;
+        for (int i = 0; i < (int)Ax.size(); i++)
+            if (it.first & (1 << i))
+                xs.pb(Ax[i]);
+        for (int i = 0; i < (int)Az.size(); i++)
+            if (it.second.first & (1 << i))
+                z1.pb(Az[i]);
+        for (int i = 0; i < (int)Az.size(); i++)
+            if (it.second.second & (1 << i))
+                z2.pb(Az[i]);
+        TreeDimLGV Lattice = graph;
+        for (int i = 0; i < (int)xs.size(); i++)
+        {
+            Lattice.addSource(xs[i], 0, z1[i]);
+            Lattice.addSink(xs[i], y, z2[i]);
+        }
+        cout << '(' << id + 1 << '/' << (int)test.size() << ')' << endl;
+        Polynomial res = Lattice.LGV();
+        if (res.p.empty())
+            cout << "Empty!" << endl;
+        else if (res.isPositive())
+            cout << "Positivity!" << endl;
+        else
+        {
+            cout << "Negative!" << endl;
+            for (int i = 0; i < (int)xs.size(); i++)
+                cout << xs[i] << ' ' << 0 << ' ' << z1[i] << endl;
+            cout << endl;
+            for (int i = 0; i < (int)xs.size(); i++)
+                cout << xs[i] << ' ' << y << ' ' << z2[i] << endl;
+            return;
+        }
+    }
+    cout << "Verdict = Positive!!!" << endl;
+}
+
+
+void generate_layer_lattice_xy_weakly_increasing(TreeDimLGV & lattice, int n)
+{
+    int z = rand() % 4 + 1;
+    int x = 0, y = 0;
+    for (int i = 0; i < n; i++)
+    {
+        x += rand() % 3;
+        y += rand() % 3;
+        lattice.addSource(x, y, 0);
+    }
+    x = 0, y = 0;
+    for (int i = 0; i < n; i++)
+    {
+        x += rand() % 3;
+        y += rand() % 3;
+        lattice.addSink(x, y, z);
+    }
+}
