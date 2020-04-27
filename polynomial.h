@@ -65,6 +65,32 @@ struct Polynomial
 
     void print()
     {
+        cout << endl;
+        for (auto it : p)
+        {
+            cout << it.second;
+            cout << "\t";
+            cout << "(";
+            int cnt = 0;
+            for (auto q : it.first)
+            {
+                cnt++;
+                cout << q.first;
+                if (cnt < (int)it.first.size())
+                    cout << ",";
+            }
+            cout << ")^(";
+            cnt = 0;
+            for (auto q : it.first)
+            {
+                cnt++;
+                cout << q.second;
+                if (cnt < (int)it.first.size())
+                    cout << ",";
+            }
+            cout << ")" << endl;
+        }
+        /*
         bool tmp = false;
         for (auto it : p)
         {
@@ -82,7 +108,7 @@ struct Polynomial
             cout << ")";
             tmp = true;
         }
-        cout << endl;
+        cout << endl;*/
     }
 
     void operator += (Polynomial q)
@@ -90,6 +116,14 @@ struct Polynomial
         for (auto it : q.p)
         {
             p[it.first] += it.second;
+        }
+    };
+
+    void operator -= (Polynomial q)
+    {
+        for (auto it : q.p)
+        {
+            p[it.first] -= it.second;
         }
     };
 
@@ -118,5 +152,34 @@ struct Polynomial
         q.normalize();
         return p == q.p;
     }
+
+    void cut(int n)
+    {
+        cerr << n << endl;
+        map < map < int, int >, ll > np;
+        for (auto it : p)
+        {
+            map < int, int > ch;
+            for (auto q : it.first)
+            {
+                if (q.first <= n)
+                    ch.insert(q);
+            }
+            np[ch] += it.second;
+        }
+        p = np; // :)
+        normalize();
+    }
 };
+
+Polynomial Xpower(int id, int pwr)
+{
+    Polynomial res;
+    map < int, int > c;
+    c[id] = pwr;
+    res.p[c] = 1;
+    return res;
+}
+
+
 
