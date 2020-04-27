@@ -12,3 +12,4 @@
 #include "graph.h"
 #include "determinant-formula-for-slojenka-graph.h"
 #include "expansion_conjecture.h"
+#include "experiments.h"
