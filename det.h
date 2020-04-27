@@ -19,6 +19,7 @@ Polynomial det(vector < vector < Polynomial > > A)
     for (int i = 0; i < n; i++)
         p.pb(i);
     Polynomial res;
+    int cnt = 0;
     do
     {
         Polynomial cur(1);
@@ -26,8 +27,11 @@ Polynomial det(vector < vector < Polynomial > > A)
             cur *= A[i][p[i]];
         cur *= sign(p);
         res += cur;
+        cnt += !cur.p.empty();
     }
     while(next_permutation(p.begin(), p.end()));
+    if (cnt > 1)
+        cout << "INTERESTING" << endl;
     res.normalize();
     return res;
 }
