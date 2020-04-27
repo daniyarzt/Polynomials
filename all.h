@@ -7,3 +7,8 @@
 #include "grassman.h"
 #include "bialternant.h"
 #include "fancyformula.h"
+#include "fancyformula2.h"
+#include "grothendieck_expansion.h"
+#include "graph.h"
+#include "determinant-formula-for-slojenka-graph.h"
+#include "expansion_conjecture.h"
