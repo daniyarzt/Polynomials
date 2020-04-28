@@ -150,6 +150,13 @@ struct Polynomial
         return true;
     }
 
+    bool LRSymmetric(int l, int r)
+    {
+        for (int i = l; i < r; i++)
+            if (!isSymmetric(i, i + 1));
+        return true;
+    }
+
     void operator += (Polynomial q)
     {
         for (auto it : q.p)
