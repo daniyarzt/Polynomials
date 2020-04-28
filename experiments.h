@@ -1,12 +1,12 @@
 void experiment()
 {
     TreeDimLGV Lattice;
-    Lattice.addEdge(0, 0, 1, FLOOR, false, 100);
-    Lattice.addEdge(-1, 0, 1, FLOOR, false, 200);
+    Lattice.addEdge(0, 0, 1, FLOOR, true, 100);
+    Lattice.addEdge(-1, 0, 1, FLOOR, true, 200);
     Lattice.addEdge(1, 1, 0, WALL, true, 300);
-    Lattice.addEdge(0, 1, 0, WALL, false, 400);
+    Lattice.addEdge(0, 1, 0, WALL, true, 400);
     int m = 2;
-    vector < int > L = {2, 2 };
+    vector < int > L = {2, 2};
     // vector < int > X = {3, 2};
     // vector < int > Z = {2, 2};
     int n = L.size();
