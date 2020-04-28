@@ -10,6 +10,5 @@
 #include "fancyformula2.h"
 #include "grothendieck_expansion.h"
 #include "graph.h"
-#include "determinant-formula-for-slojenka-graph.h"
 #include "expansion_conjecture.h"
 #include "experiments.h"

@@ -1,4 +1,4 @@
-void grothendieck_expansion()
+void grothendieck_expansion1()
 {
         //  checking fancy formula
     string lambda, theta;

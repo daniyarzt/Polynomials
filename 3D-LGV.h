@@ -1,3 +1,5 @@
+#define WALLS_ALLOWED
+
 
 static const int FLOOR = 0;
 static const int WALL = 1;
@@ -11,8 +13,8 @@ struct Edge
 
     bool canUse(int x, int y, int z)
     {
-        if (type == FLOOR && y != 0)
-            return false;
+        // if (type == FLOOR && y != 0)
+        //     return false;
         return true;
     }
 };
@@ -69,7 +71,7 @@ struct Paths
             {
                 int id;
                 if (it.type == FLOOR)
-                    id = it.firstID + z - 1;
+                    id = it.firstID + z;
                 else
                     id = it.firstID + y;
                 character[id]++;
