@@ -111,6 +111,45 @@ struct Polynomial
         cout << endl;*/
     }
 
+    void symmetricPrint()
+    {
+        normalize();
+        Polynomial q;
+        for (auto mp : p)
+        {
+            vector < int > degrees, terms;
+            for (auto it : mp.first)
+            {
+                if (it.second)
+                    degrees.pb(it.second), terms.pb(it.first);
+            }
+            sort(degrees.begin(), degrees.end());
+            map < int, int > np;
+            for (int i = 0; i < (int)terms.size(); i++)
+                np[terms[i]] = degrees[i];
+            q.p[np] += mp.second;
+        }
+        q.print();
+    }
+
+    bool isSymmetric(int i, int j)
+    {
+        normalize();
+        for (auto mp : p)
+        {
+            map < int, int > np = mp.first;
+            np[i] += 0;
+            np[j] += 0;
+            swap(np[i], np[j]);
+            np = normalize(np);
+            if (!p.count(np))
+                return false;
+            if (p[np] != mp.second)
+                return false;
+        }
+        return true;
+    }
+
     void operator += (Polynomial q)
     {
         for (auto it : q.p)
