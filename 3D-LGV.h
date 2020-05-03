@@ -289,6 +289,77 @@ struct TreeDimLGV
     }
 };
 
+void Check(vector < int > Ax, int y, vector < int > Az, TreeDimLGV graph)
+{
+    vector < int > xmasks, zmasks;
+    for (int mask = 1; mask < (1 << (int)Ax.size()); mask++)
+        if (__builtin_popcount(mask) <= 4)
+            xmasks.pb(mask);
+    for (int mask = 1; mask < (1 << (int)Az.size()); mask++)
+        if (__builtin_popcount(mask) <= 4)
+            zmasks.pb(mask);
+    vector < pair < pair < int, int >, pair < int, int > > > test;
+    for (auto xmask1 : xmasks)
+    {
+        for (auto xmask2 : xmasks)
+        {
+            if (__builtin_popcount(xmask1) != __builtin_popcount(xmask2))
+                continue;
+            for (auto mask1 : zmasks)
+            {
+                if (__builtin_popcount(xmask1) != __builtin_popcount(mask1))
+                    continue;
+                for (auto mask2 : zmasks)
+                {
+                    if (__builtin_popcount(mask2) != __builtin_popcount(mask1))
+                        continue;
+                    test.pb({{xmask1, xmask2}, {mask1, mask2}});
+                }
+            }
+        }
+    }
+    for (int id = 0; id < (int)test.size(); id++)
+    {
+        auto it = test[id];
+        vector < int > x1, x2, z1, z2;
+        for (int i = 0; i < (int)Ax.size(); i++)
+            if (it.first.first & (1 << i))
+                x1.pb(Ax[i]);
+        for (int i = 0; i < (int)Ax.size(); i++)
+            if (it.first.second & (1 << i))
+                x2.pb(Ax[i]);
+        for (int i = 0; i < (int)Az.size(); i++)
+            if (it.second.first & (1 << i))
+                z1.pb(Az[i]);
+        for (int i = 0; i < (int)Az.size(); i++)
+            if (it.second.second & (1 << i))
+                z2.pb(Az[i]);
+        TreeDimLGV Lattice = graph;
+        for (int i = 0; i < (int)x1.size(); i++)
+        {
+            Lattice.addSource(x1[i], 0, z1[i]);
+            Lattice.addSink(x2[i], y, z2[i]);
+        }
+        cout << '(' << id + 1 << '/' << (int)test.size() << ')' << endl;
+        Polynomial res = Lattice.LGV();
+        if (res.p.empty())
+            cout << "Empty!" << endl;
+        else if (res.isPositive())
+            cout << "Positivity!" << endl;
+        else
+        {
+            cout << "Negative!" << endl;
+            for (int i = 0; i < (int)x1.size(); i++)
+                cout << x1[i] << ' ' << 0 << ' ' << z1[i] << endl;
+            cout << endl;
+            for (int i = 0; i < (int)x1.size(); i++)
+                cout << x2[i] << ' ' << y << ' ' << z2[i] << endl;
+            return;
+        }
+    }
+    cout << "Verdict = Positive!!!" << endl;
+}
+
 void straightCheck(vector < int > Ax, int y, vector < int > Az, TreeDimLGV graph)
 {
     vector < int > xmasks, zmasks;
@@ -299,17 +370,17 @@ void straightCheck(vector < int > Ax, int y, vector < int > Az, TreeDimLGV graph
         if (__builtin_popcount(mask) <= 4)
             zmasks.pb(mask);
     vector < pair < int, pair < int, int > > > test;
-    for (auto xmask : xmasks)
+    for (auto xmask1 : xmasks)
     {
         for (auto mask1 : zmasks)
         {
-            if (__builtin_popcount(xmask) != __builtin_popcount(mask1))
+            if (__builtin_popcount(xmask1) != __builtin_popcount(mask1))
                 continue;
             for (auto mask2 : zmasks)
             {
                 if (__builtin_popcount(mask2) != __builtin_popcount(mask1))
                     continue;
-                test.pb({xmask, {mask1, mask2}});
+                test.pb({xmask1, {mask1, mask2}});
             }
         }
     }
@@ -318,7 +389,7 @@ void straightCheck(vector < int > Ax, int y, vector < int > Az, TreeDimLGV graph
         auto it = test[id];
         vector < int > xs, z1, z2;
         for (int i = 0; i < (int)Ax.size(); i++)
-            if (it.first & (1 << i))
+            if (it.first& (1 << i))
                 xs.pb(Ax[i]);
         for (int i = 0; i < (int)Az.size(); i++)
             if (it.second.first & (1 << i))
