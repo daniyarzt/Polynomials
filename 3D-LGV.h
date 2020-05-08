@@ -1,6 +1,4 @@
-#define WALLS_ALLOWED
-
-
+#define MULTIFLOORS
 static const int FLOOR = 0;
 static const int WALL = 1;
 static const int K = 10;
@@ -13,8 +11,10 @@ struct Edge
 
     bool canUse(int x, int y, int z)
     {
-        // if (type == FLOOR && y != 0)
-        //     return false;
+        #ifndef MULTIFLOORS
+        if (type == FLOOR && y != 0)
+            return false;
+        #endif
         return true;
     }
 };
@@ -53,11 +53,13 @@ struct Paths
                 dfs1(tx, ty, tz);
         }
     }
-
+    int tab = 0;
     void dfs2(int x, int y, int z)
     {
         if (!was[x][y][z])
             return;
+        // for (int i = 0; i < tab; i++) cout << "  ";
+        // for (auto [id, deg] : character) cerr << id << ' ' << deg << ", "; cerr << "\n";
         if (x == fx && y == fy && z == fz)
         {
             res.add(character, 1);
@@ -65,6 +67,8 @@ struct Paths
         }
         for (auto it : e)
         {
+            // for (int i = 0; i < tab; i++) cout << "  ";
+            // cerr << "try: " << it.firstID << "\n";
             if (!it.canUse(x, y, z))
                 continue;
             if (it.isWeighted)
@@ -76,7 +80,9 @@ struct Paths
                     id = it.firstID + y;
                 character[id]++;
                 path.pb(it);
+                tab++;
                 dfs2(x + it.dx, y + it.dy, z + it.dz);
+                tab--;
                 character[id]--;
                 if (character[id] == 0)
                     character.erase(id);
@@ -85,7 +91,9 @@ struct Paths
             else
             {
                 path.pb(it);
+                tab++;
                 dfs2(x + it.dx, y + it.dy, z + it.dz);
+                tab--;
                 path.pop_back();
             }
         }

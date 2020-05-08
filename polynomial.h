@@ -1,9 +1,12 @@
 #include <bits/stdc++.h>
 
-#define pb push_back
-typedef long long ll;
-
 using namespace std;
+#define pb push_back
+#define mp make_pair
+typedef long long ll;
+typedef pair<int,int> pii;
+typedef vector<int> vi;
+typedef vector<pii> vii;
 
 struct Polynomial
 {
@@ -90,46 +93,38 @@ struct Polynomial
             }
             cout << ")" << endl;
         }
-        /*
-        bool tmp = false;
-        for (auto it : p)
-        {
-            if (tmp)
-                cout << " + ";
-            cout << it.second << "(";
-            bool kek = false;
-            for (auto a : it.first)
-            {
-                if (kek)
-                    cout << " * ";
-                cout << a.first << "^" << a.second;
-                kek = true;
-            }
-            cout << ")";
-            tmp = true;
-        }
-        cout << endl;*/
     }
 
-    void symmetricPrint()
+    void symmetricPrint(vector<pii> sym)
     {
         normalize();
         Polynomial q;
-        for (auto mp : p)
-        {
-            vector < int > degrees, terms;
-            for (auto it : mp.first)
+        q.p = p;
+        for (auto [l, r] : sym) {
+            vector < pair< pair<vi, ll>, vii > > terms;
+            for (auto [degs, coef] : q.p)
             {
-                if (it.second)
-                    degrees.pb(it.second), terms.pb(it.first);
+                if (!coef) continue;
+                vii others;
+                vi ids(r - l + 1, 0);
+                for (auto [id, pw] : degs)
+                    if (l <= id && id <= r)
+                        ids[id - l] = pw;
+                    else
+                        others.pb(mp(id, pw));
+                sort(ids.begin(), ids.end());
+                sort(others.begin(), others.end());
+                terms.pb(mp(mp(ids, coef), others));
             }
-            sort(degrees.begin(), degrees.end());
-            map < int, int > np;
-            for (int i = 0; i < (int)terms.size(); i++)
-                np[terms[i]] = degrees[i];
-            q.p[np] += mp.second;
+            vi last_ids;
+            for (auto &[tt, other] : terms) {
+                auto &[ids, coef] = tt;
+                if (last_ids.size() == 0 || last_ids != ids)
+                    last_ids = ids;
+                
+
+            }
         }
-        q.print();
     }
 
     bool isSymmetric(int i, int j)
@@ -138,14 +133,15 @@ struct Polynomial
         for (auto mp : p)
         {
             map < int, int > np = mp.first;
-            np[i] += 0;
-            np[j] += 0;
+            assert(mp.second != 0);
             swap(np[i], np[j]);
             np = normalize(np);
             if (!p.count(np))
                 return false;
-            if (p[np] != mp.second)
-                return false;
+
+            if (p[np] != mp.second) {
+                return false;   
+            }
         }
         return true;
     }
@@ -153,7 +149,8 @@ struct Polynomial
     bool LRSymmetric(int l, int r)
     {
         for (int i = l; i < r; i++)
-            if (!isSymmetric(i, i + 1));
+            if (!isSymmetric(i, i + 1))
+                return false;
         return true;
     }
 

@@ -20,6 +20,7 @@ Polynomial det(vector < vector < Polynomial > > A)
         p.pb(i);
     Polynomial res;
     int cnt = 0;
+    bool hasNeg = false;
     do
     {
         Polynomial cur(1);
@@ -28,9 +29,11 @@ Polynomial det(vector < vector < Polynomial > > A)
         cur *= sign(p);
         res += cur;
         cnt += !cur.p.empty();
+        if (sign(p) < 0)
+            hasNeg = true;
     }
     while(next_permutation(p.begin(), p.end()));
-    if (cnt > 1)
+    if (hasNeg)
         cout << "INTERESTING" << endl;
     res.normalize();
     return res;
