@@ -69,3 +69,55 @@ void experiment()
     // P.symmetricPrint({ mp(300, 300 + m - 1) });
 }
 
+void experiment2()
+{
+    c[0][0] = 1;
+    for (int i = 1; i < 30; i++)
+        for (int j = 0; j <= i; j++)
+            c[i][j] = (j == 0 ? 1 : c[i-1][j-1] + c[i-1][j]);
+
+
+    TreeDimLGV Lattice;
+    int xID = 100;
+    int yID = 200;
+    int zID = 300;
+    int m = 3;
+    int k = 3;
+    int n = 3;
+    // vector < int > lam = {3, 2, 2};
+    // vector < int > mu = {2, 1, 0};
+    // int n = lam.size();
+    // while(sz(mu) < n) mu.pb(0);
+
+    Lattice.addEdge(1, 0, 0, DOOR, true, xID);
+    Lattice.addEdge(0, 1, 0, WALL, false, xID);
+    Lattice.addEdge(0, 0, 1, FLOOR, true, xID);
+
+    for (int i = 0; i < n; i++) {
+        Lattice.addSource(i, 0, n - 1 - i);
+        Lattice.addSink(n + i, m, k + n - 1 - i);
+    }
+
+    Polynomial P = Lattice.LGV();
+    ll g = 0;
+    for (auto &[ch, coef] : P.p) {
+        g = __gcd(g, abs(coef));
+    }
+    for (auto &[ch, coef] : P.p) {
+        coef /= g;
+    }
+    P.print();
+    cout << "coef = " << g << "\n";
+    if (P.isPositive())
+        cout << "isPositive\n";
+    else
+        cout << "naaah\n";
+
+    test_sym(P, yID, yID + m - 1);
+    test_sym(P, zID, zID + k - 1);
+    // test_sym(P, tID - lam[0] + 1, tID - 1);
+
+    cout << "coef = " << g << "\n";
+
+
+}

@@ -1,6 +1,7 @@
 #define MULTIFLOORS
 static const int FLOOR = 0;
 static const int WALL = 1;
+static const int DOOR = 2;
 static const int K = 10;
 
 struct Edge
@@ -76,8 +77,10 @@ struct Paths
                 int id;
                 if (it.type == FLOOR)
                     id = it.firstID + z;
-                else
+                else if (it.type == WALL)
                     id = it.firstID + y;
+                else if (it.type == DOOR)
+                    id = it.firstID + x;
                 character[id]++;
                 path.pb(it);
                 tab++;
