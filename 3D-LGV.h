@@ -1,4 +1,3 @@
-#define MULTIFLOORS
 static const int FLOOR = 0;
 static const int WALL = 1;
 static const int DOOR = 2;
@@ -12,10 +11,11 @@ struct Edge
 
     bool canUse(int x, int y, int z)
     {
-        #ifndef MULTIFLOORS
-        if (type == FLOOR && y != 0)
+        if (type == FLOOR && z == 0) {
             return false;
-        #endif
+        }
+        if (type == WALL && z != 0)
+            return false;
         return true;
     }
 };
@@ -59,26 +59,30 @@ struct Paths
     {
         if (!was[x][y][z])
             return;
-        // for (int i = 0; i < tab; i++) cout << "  ";
+        // for (int i = 0; i < tab; i++) cerr << "  ";
         // for (auto [id, deg] : character) cerr << id << ' ' << deg << ", "; cerr << "\n";
         if (x == fx && y == fy && z == fz)
         {
+            // for (int i = 0; i < tab; i++) cerr << "  ";
+            // cerr << "added: ";
+            // for (auto [id, deg] : character) cerr << id << ' ' << deg << ", "; cerr << "\n";
             res.add(character, 1);
             return;
         }
         for (auto it : e)
         {
-            // for (int i = 0; i < tab; i++) cout << "  ";
+            // for (int i = 0; i < tab; i++) cerr << "  ";
             // cerr << "try: " << it.firstID << "\n";
             if (!it.canUse(x, y, z))
                 continue;
             if (it.isWeighted)
             {
                 int id;
-                if (it.type == FLOOR)
-                    id = it.firstID + z;
+                if (it.type == FLOOR) {
+                    id = it.firstID - z;
+                }
                 else if (it.type == WALL)
-                    id = it.firstID + y;
+                    id = it.firstID + MAX_X + 1 - y;
                 else if (it.type == DOOR)
                     id = it.firstID + x;
                 character[id]++;
@@ -117,6 +121,7 @@ struct TreeDimLGV
     vector < Edge > e;
     vector < int > Ax, Ay, Az;
     vector < int > Bx, By, Bz;
+    vector < vector < Polynomial > > A;
 
     void addEdge(int dx, int dy, int dz, int type, bool isWeighted, int firstID)
     {
@@ -135,6 +140,40 @@ struct TreeDimLGV
         Bx.pb(x);
         By.pb(y);
         Bz.pb(z);
+    }
+    void calcLGV()
+    {
+        int n = (int)Ax.size();
+        A = vector < vector < Polynomial > >(n, vector < Polynomial > (n));
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                A[i][j] = W(Ax[i], Ay[i], Az[i], Bx[j], By[j], Bz[j], e);
+    }
+    bool isInteresting() {
+        int n = (int)A.size();
+        vector < int > p;
+        for (int i = 0; i < n; i++)
+            p.pb(i);
+        do
+        {
+            bool is_alive = true;
+            for (int i = 0; i < n; i++)
+                is_alive &= A[i][p[i]].p.size() > 0;
+
+            if (is_alive && sign(p) < 0)
+                return true;
+        }
+        while(next_permutation(p.begin(), p.end()));
+        return false;
+    }
+    Polynomial getLGV() {
+        return det(A);
+    }
+    Polynomial getTrace() {
+        Polynomial res(1);
+        for (int i = 0; i < (int)A.size(); i++)
+            res *= A[i][i];
+        return res;
     }
 
     Polynomial LGV()
@@ -158,14 +197,29 @@ struct TreeDimLGV
         return det(A);
     }
 
-    void print()
+    void print(bool full = false)
     {
+        int n = (int)Ax.size();
         cout << "Sources: " << endl;
-        for (int i = 0; i < (int)Ax.size(); i++)
+        for (int i = 0; i < n; i++)
             cout << Ax[i] << ' '<< Ay[i] << ' ' << Az[i] << endl;
         cout << "Sinks: " << endl;
-        for (int i = 0; i < (int)Bx.size(); i++)
+        for (int i = 0; i < n; i++)
             cout << Bx[i] << ' ' << By[i] << ' ' << Bz[i] << endl;
+        cout << "Matrix:\n";
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+                cout << A[i][j].p.size() << ' ';
+            cout << "\n";
+        }
+        if (full) {
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < n; j++) {
+                    cout << "A[" << i + 1 << ' ' << j + 1 << "] = ";
+                    A[i][j].print();
+                }
+        }
     }
 
     void GrothendieckInit(string lambda, string mu, int M)
@@ -302,7 +356,7 @@ struct TreeDimLGV
     }
 };
 
-void Check(vector < int > Ax, int y, vector < int > Az, TreeDimLGV graph)
+void Check(vector < int > Ax, int y, vector < int > Az, TreeDimLGV &graph)
 {
     vector < int > xmasks, zmasks;
     for (int mask = 1; mask < (1 << (int)Ax.size()); mask++)
@@ -347,6 +401,7 @@ void Check(vector < int > Ax, int y, vector < int > Az, TreeDimLGV graph)
         for (int i = 0; i < (int)Az.size(); i++)
             if (it.second.second & (1 << i))
                 z2.pb(Az[i]);
+
         TreeDimLGV Lattice = graph;
         for (int i = 0; i < (int)x1.size(); i++)
         {

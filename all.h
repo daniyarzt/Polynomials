@@ -11,4 +11,3 @@
 #include "grothendieck_expansion.h"
 #include "graph.h"
 #include "expansion_conjecture.h"
-#include "experiments.h"

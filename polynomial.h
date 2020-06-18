@@ -68,12 +68,11 @@ struct Polynomial
 
     void print()
     {
-        cout << endl;
         for (auto it : p)
         {
-            cout << it.second;
             cout << "\t";
-            cout << "(";
+            cout << it.second;
+            cout << " * (";
             int cnt = 0;
             for (auto q : it.first)
             {
@@ -95,37 +94,6 @@ struct Polynomial
         }
     }
 
-    void symmetricPrint(vector<pii> sym)
-    {
-        normalize();
-        Polynomial q;
-        q.p = p;
-        for (auto [l, r] : sym) {
-            vector < pair< pair<vi, ll>, vii > > terms;
-            for (auto [degs, coef] : q.p)
-            {
-                if (!coef) continue;
-                vii others;
-                vi ids(r - l + 1, 0);
-                for (auto [id, pw] : degs)
-                    if (l <= id && id <= r)
-                        ids[id - l] = pw;
-                    else
-                        others.pb(mp(id, pw));
-                sort(ids.begin(), ids.end());
-                sort(others.begin(), others.end());
-                terms.pb(mp(mp(ids, coef), others));
-            }
-            vi last_ids;
-            for (auto &[tt, other] : terms) {
-                auto &[ids, coef] = tt;
-                if (last_ids.size() == 0 || last_ids != ids)
-                    last_ids = ids;
-                
-
-            }
-        }
-    }
 
     bool isSymmetric(int i, int j)
     {
@@ -144,6 +112,25 @@ struct Polynomial
             }
         }
         return true;
+    }
+
+    Polynomial spec_minus(int l, int r) {
+        map < map < int, int >, ll > q;
+        for (auto it : p)
+        {
+            if (it.second == 0)
+                continue;
+            map<int,int> term;
+            int cnt = 0;
+            for (auto [letter, pw] : it.first)
+                if (l <= letter && letter <= r)
+                    cnt += pw;
+
+            q[normalize(it.first)] += it.second * (cnt & 1 ? -1 : 1);
+        }
+        Polynomial np;
+        np.p = q;
+        return np;
     }
 
     bool LRSymmetric(int l, int r)

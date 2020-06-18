@@ -28,13 +28,12 @@ Polynomial det(vector < vector < Polynomial > > A)
             cur *= A[i][p[i]];
         cur *= sign(p);
         res += cur;
+        cur.normalize();
         cnt += !cur.p.empty();
-        if (sign(p) < 0)
+        if (sign(p) < 0 && !cur.p.empty())
             hasNeg = true;
     }
     while(next_permutation(p.begin(), p.end()));
-    if (hasNeg)
-        cout << "INTERESTING" << endl;
     res.normalize();
     return res;
 }
