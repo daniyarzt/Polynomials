@@ -11,7 +11,6 @@
 #include "grothendieck_expansion.h"
 #include "graph.h"
 #include "expansion_conjecture.h"
-#include "determinant-formula-for-slojenka-graph.h"
 #include "shur.h"
 #include "homogenous.h"
 #include "generate-partitions.h"
