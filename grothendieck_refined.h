@@ -2,6 +2,7 @@
 #define forn(i, n) for (int i = 1; i <= n; i++)
 
 static const bool WONNAPRINT = false;
+static const bool ISREFINED = false;
 using namespace std;
 
 struct Grothendieck_refined
@@ -50,6 +51,60 @@ struct Grothendieck_refined
         cout << "-----------------------------------" << endl;
     }
 
+    void latexPrint(map < int, int > character)
+    {
+        cout << char(92) << "young(";
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < (int)a[i].size(); j++)
+            {
+                if (!a[i][j])
+                    cout << ":";
+                else
+                    cout << a[i][j];
+            }
+            if (i == n - 1)
+                cout << ")";
+            else
+                cout << ",";
+        }
+        cout << endl;
+        cout << "$g_{" << char(92) << "theta} = ";
+        for (auto it : character)
+        {
+                if (it.first <= M)
+                    cout << "x_{" << it.first << "}^{" << it.second << "}";
+                else
+                    cout << "t_{" << it.first - M << "}^{" << it.second << "}";
+        }
+        cout << "$" << endl;
+        character.clear();
+        for (int i = 1; i <= M; i++)
+        {
+            for (int x = 0; x < n; x++)
+            {
+                bool good = false;
+                for (int y = 0; y < (int)a[x].size(); y++)
+                {
+                    if (a[x][y] == i)
+                    {
+                        good = true;
+                        break;
+                    }
+                }
+                if (good)
+                    character[i]++;
+            }
+        }
+        cout << "$   g'_{" << char(92) << "theta} = ";
+        for (auto it : character)
+        {
+                cout << "x_{" << it.first << "}^{" << it.second << "}";
+        }
+        cout << "$" << endl << endl;
+
+    }
+
     map < int, int > getCharacter()
     {
         vector < int > c(M + 1);
@@ -74,10 +129,13 @@ struct Grothendieck_refined
             if (c[i])
                 character[i] = c[i];
         }
-        for (int i = 0; i < n; i++)
+        if (ISREFINED)
         {
-            if (d[i])
-                character[M + i + 1] = d[i];
+            for (int i = 0; i < n; i++)
+            {
+                if (d[i])
+                    character[M + i + 1] = d[i];
+            }
         }
         return character;
     }
@@ -89,7 +147,7 @@ struct Grothendieck_refined
             map < int, int > character = getCharacter();
             ans.add(character, 1);
             if (WONNAPRINT)
-                print(character);
+                latexPrint(character);
             return;
         }
         int x = cells[id].first;
