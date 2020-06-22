@@ -1,10 +1,5 @@
 
-int MAXP = 3; // max lam part
-int MAX_X = 3; // number of x-vars (height)
-int MAX_Z = 2; // number of z-vars (width)
-int n = 2; // size of det
 
-#include "all.h"
 #define sz(x) ((int)x.size())
 
 void test_sym(Polynomial &P, int l, int r) {
@@ -144,7 +139,7 @@ void experiment3() {
             c[i][j] = (j == 0 ? 1 : c[i-1][j-1] + c[i-1][j]);
 
 
-    
+
     int xID = 100;
     int yID = 200;
     int zID = 300;
@@ -177,7 +172,7 @@ void experiment3() {
         //     a[i] = rand() % (min(lam[i], (i == 0 ? W : a[i-1])) + 1);
         //     a[i] = rand() % (min(lam[i], (i == 0 ? W : a[i-1])) + 1);
 
-        //     // 
+        //     //
         //     b[i] = rand();
         //     // b[i] = i == 0
         //     //     ? 1 + rand() % H
@@ -269,7 +264,7 @@ void experiment4() {
             Lattice.addSink(i - mu[i], MAX_X, 0);
         }
         Lattice.calcLGV();
-        
+
         cout << "~~~~~~~~~~~~~~~~~\n";
         // Lattice.print();
         // cout << "lambda = "; for (int i = 0; i < n; i++) cout << lam[i]; cout << " ";
@@ -351,7 +346,7 @@ void experiment5() {
             Lattice.addSink(i - mu[i], n, 0);
         }
         Lattice.calcLGV();
-        
+
         cout << "~~~~~~~~~~~~~~~~~\n";
         // Lattice.print();
         // cout << "lambda = "; for (int i = 0; i < n; i++) cout << lam[i]; cout << " ";
@@ -368,7 +363,7 @@ void experiment5() {
         cout << "mu = "; for (int i = 0; i < n; i++) cout << mu[i]; cout << "\n";
         cout << "a = "; for (int i = 0; i < n; i++) cout << a[i]; cout << "\n";
         cout << "b = "; for (int i = 0; i < n; i++) cout << b[i]; cout << "\n";
-        
+
         // Polynomial Q = P.spec_minus(zID-10, zID + 10);
         if (P.isPositive()) {
             Lattice.print();

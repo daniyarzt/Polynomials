@@ -94,6 +94,49 @@ struct Polynomial
         }
     }
 
+    void latexPrint(int M = INT_MAX) // prints polynomial in LaTEX, if you have xs and ts then ti = x[i + M]
+    {
+        normalize();
+        if (p.empty())
+        {
+            cout << 0;
+            return;
+        }
+
+        bool tmp = false;
+        for (auto it : p)
+        {
+            if (it.first.empty())
+            {
+                cout << it.second << ' ';
+                continue;
+            }
+            if (it.second < 0)
+            {
+                if (it.second == -1)
+                    cout << " - ";
+                else
+                    cout << it.second;
+            }
+            else
+            {
+                if (tmp)
+                    cout << " + ";
+                if (it.second > 1)
+                    cout << it.second;
+            }
+            tmp = true;
+            for (auto x : it.first)
+            {
+                if (!x.second)
+                    continue;
+                if (x.first <= M)
+                    cout << "x_{" << x.first << "}^{" << x.second << "}";
+                else
+                    cout << "t_{" << x.first - M << "}^{" << x.second << "}";
+            }
+        }
+    }
 
     bool isSymmetric(int i, int j)
     {
@@ -108,7 +151,7 @@ struct Polynomial
                 return false;
 
             if (p[np] != mp.second) {
-                return false;   
+                return false;
             }
         }
         return true;

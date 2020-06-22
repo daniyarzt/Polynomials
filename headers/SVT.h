@@ -224,14 +224,3 @@ struct SVT
         return res;
     }
 };
-
-
-
-
-
-void expansion_conjecture()
-{
-    SVT s;
-    s.sol("31", 3, "2011", "");
-
-}

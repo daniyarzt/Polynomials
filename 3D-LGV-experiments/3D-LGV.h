@@ -3,6 +3,13 @@ static const int WALL = 1;
 static const int DOOR = 2;
 static const int K = 10;
 
+//put it here from experiments.h
+int MAXP = 3; // max lam part
+int MAX_X = 3; // number of x-vars (height)
+int MAX_Z = 2; // number of z-vars (width)
+int n = 2; // size of det
+
+
 struct Edge
 {
     int dx, dy, dz, type;
