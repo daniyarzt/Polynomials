@@ -8,7 +8,7 @@
 
 // struct NPath: {permutation, weight, {list of Path}}
 // generator: NPath(vector < int > permutation, vector < Path > paths) - calculates weight by 
-//																		 multiplying weights of each path in paths
+//														            multiplying weights of each path in paths
 //
 // generator: NPath() - creates an empty Paths, but with weight = 1
 // functions:
