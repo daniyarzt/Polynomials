@@ -33,7 +33,7 @@ void test1()
 
 	for (int i = 0; i < n; i++, cerr << endl)
 		for (int j = 0; j < n; j++)
-			D[i][j][0].weight.print();
+			D[i][j][0].getWeight().print();
 	vector < NPath > res = PathSavingLGV().det(D);
   
     cerr << "I was here" << endl;
