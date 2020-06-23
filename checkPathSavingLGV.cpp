@@ -45,9 +45,34 @@ void test1()
     }
 }
 
+void test2()
+{
+	TreeDimLGV T;
+	T.addSource(0, 0, 0);
+	T.addSource(0, 1, 0);
+
+	T.addSink(1, 0, 0);
+	T.addSink(1, 1, 0);
+
+	T.addEdge(1, 0, 0, WALL, true, 1);
+	T.addEdge(1, 1, 0, WALL, true, 10);
+	T.addEdge(1, -1, 0, WALL, true, 20);
+
+	T.LGV();
+
+	vector < NPath > res = PathSavingLGV().det(T.D);
+
+	for (auto it : res)
+    {
+    	it.print();
+    	it.weight.print();
+    	cout << endl;
+    }
+}
+     
 int main() 
 {
-	test1();
+	test2();
 	 
 	
 	return 0;
