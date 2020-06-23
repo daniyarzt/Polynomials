@@ -4,6 +4,7 @@ static const int DOOR = 2;
 static const int K = 10;
 
 static const bool WONNASAVEPATH = true; // turn true if you want to use pathSavingLGV
+const int INF = (int)1e9 + 228;
 
 //I've put it here from experiments.h
 int MAXP = 3; // max lam part
@@ -42,7 +43,7 @@ struct Paths
     vector <Edge > path;
 
     int sx, sy, sz;
-    vector < Polynomial > weights;
+    vector < int > weights;
     
     vector < Path > vectorPath;
 
@@ -122,7 +123,7 @@ struct Paths
                 character[id]++;
                 
                 if (WONNASAVEPATH)
-                	weights.pb(Xpower(id, 1));
+                	weights.pb(id);
                 
                 path.pb(it);
                 tab++;
@@ -139,7 +140,7 @@ struct Paths
             else
             {
             	if (WONNASAVEPATH)
-            		weights.pb(Polynomial(1));
+            		weights.pb(INF);
                 
                 path.pb(it);
                 tab++;
@@ -266,7 +267,7 @@ struct TreeDimLGV
 				for (auto it : D[i][j])
 				{
 					it.print();
-					it.weight.print();		
+					it.getWeight().print();		
 				}
 			}
 		}        
