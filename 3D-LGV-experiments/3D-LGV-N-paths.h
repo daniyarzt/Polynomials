@@ -2,8 +2,11 @@
 	struct Path: {source, weigh, {list of Edges}}
 	generator: Path(x, y, z) - creates Path with source - (x, y, z)
 	functions:
-	addEdge(Edge e, Polynomial weight) - adds an edge to the current path
+	
 	addEdge(Edge e, int id) - same as prev. but weight = x_{id}
+	
+	getWeight() - returns weight on the path
+
 	print() - prints source, and seq. of edges
 */
 
@@ -28,26 +31,28 @@
 struct Path
 {
     int source_x, source_y, source_z;
-    Polynomial weight;
     vector < Edge > edges;
+    vector < int > ids; 
 
-    Path () 
-    {
-    	weight = Polynomial(1);
-    }
+    Path () {}
 
-    Path (int x, int y, int z): source_x(x), source_y(y), source_z(z), weight(1) {}
-
-    void addEdge(Edge e, Polynomial w) // adds edge e with weight w
-    {
-        edges.pb(e);
-        weight *= w;
-    }
+    Path (int x, int y, int z): source_x(x), source_y(y), source_z(z) {}
 
     void addEdge(Edge e, int id) // adds edge e with weight x_{id}
     {
         edges.pb(e);
-        weight *= Xpower(id, 1);
+        ids.pb(id);
+    }
+
+    Polynomial getWeight()  // return weight of the path
+    {
+    	Polynomial weight(1);
+    	for (auto id : ids)
+    	{
+    		if (id != INF)
+    			weight *= Xpower(id, 1);
+    	}
+    	return weight;
     }
 
     void print()
@@ -57,6 +62,14 @@ struct Path
         cout << "Edges: ";
         for (auto e : edges)
             cout << '(' << e.dx << ',' << e.dy << ',' << e.dz << ") ";
+        cout << endl << "Ids: ";
+        for (auto id : ids)
+        {
+        	if (id == INF)
+        		cout << "inf ";
+			else
+				cout << id << ' ';
+        }
         cout << endl << "--------------" << endl;
     }
 };
@@ -82,7 +95,7 @@ struct NPath
 		paths = _paths;
 		weight = Polynomial(1);
 		for (auto it : paths)
-			weight *= it.weight;
+			weight *= it.getWeight();
 	}
 
 	void addPath(int s, int f, Path p)
@@ -94,7 +107,7 @@ struct NPath
 		
 		perm[s] = f;
 		paths[s] = p;
-		weight *= p.weight;		
+		weight *= p.getWeight();		
 	}
 
 	int getSign()  // returns the sign on the permutation
