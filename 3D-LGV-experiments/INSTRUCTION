@@ -26,10 +26,14 @@
 	struct Path: {source, weigh, {list of Edges}}
 	generator: Path(x, y, z) - creates Path with source - (x, y, z)
 	functions:
-	addEdge(Edge e, Polynomial weight) - adds an edge to the current path
+	
 	addEdge(Edge e, int id) - same as prev. but weight = x_{id}
+	
+	getWeight() - returns weight on the path
+
 	print() - prints source, and seq. of edges
 */
+
 
 /*  *** struct NPath *** 
 	struct NPath: {permutation, weight, {list of Path}}
