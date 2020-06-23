@@ -16,10 +16,6 @@ struct Edge
     bool isWeighted;
     int firstID;
 
-    Edge () {}
-
-    Edge (int _dx, int _dy, int _dz): dx(_dx), dy(_dy), dz(_dz) {}
-
     bool canUse(int x, int y, int z)
     {
         if (type == FLOOR && z == 0) {
