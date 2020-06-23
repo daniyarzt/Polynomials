@@ -1,0 +1,49 @@
+
+/* *** INSTRUCTIONS *** 
+	1. set WONNASAVEPATH = true in 3D-LGV.h
+	2. TreeDimLGV has two-dimensional matrix D of vector < Path >  (vector < vector < vector < Path > > >).
+	3. Calculate TreeDimLGV().LGV() as before, and D will be automatically filled
+	4. Then you can use PathSavingLGV().det(D) to calculate the needed vector < NPath > 
+
+	see examples in "checkPathSavingLGV.cpp"
+	
+	no need to include anything, everything is already included in "3D-LGV.h"
+*/
+
+/*  *** struct PathSavingLGV *** 
+	Is Used to calculate Lindstrom-Gessel-Vienot Lemma with saving each path in the lattice
+
+	mult(vector < NPath > a, vector < Path > b, int start, int finish) - does the same thing as polynomial multiplication, 
+									but now with saving paths (a * b)
+	
+	add (vector < NPath > a, vector < NPath > b) - same as polynomial addition 
+
+	det(D) - does the same thing as the polynomial det, but also saves paths
+	
+*/
+
+/*  *** struct Path ***
+	struct Path: {source, weigh, {list of Edges}}
+	generator: Path(x, y, z) - creates Path with source - (x, y, z)
+	functions:
+	addEdge(Edge e, Polynomial weight) - adds an edge to the current path
+	addEdge(Edge e, int id) - same as prev. but weight = x_{id}
+	print() - prints source, and seq. of edges
+*/
+
+/*  *** struct NPath *** 
+	struct NPath: {permutation, weight, {list of Path}}
+	generator: NPath(vector < int > permutation, vector < Path > paths) - calculates weight by 
+																		 multiplying weights of each path in paths
+
+	generator: NPath(vector < int > permutation) -  generates NPath with given permutation, paths are empty, weight = 1
+	generator: NPath() - creates an empty Paths, but with weight = 1
+	functions:
+	print() - prints ;)
+	addPath(int start, int finish, Path p) - sets perm[start] = finish, paths[start] = p
+	getSign() - returns the sign of permutation
+
+	vector < NPath > mult(vector <  NPath >, vector < Path >, int start, int finish) - does the same thing as polynomial multiplication
+																		, but now with saving paths
+*/
+
