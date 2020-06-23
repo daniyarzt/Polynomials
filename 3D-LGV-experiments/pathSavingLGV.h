@@ -1,3 +1,18 @@
+#define PathRow vector < vector < Path > > 
+#define PathMatrix vector < vector < vector < Path > > > 
+
+
+/* *** INSTRUCTIONS *** 
+	1. set WONNASAVEPATH = true in 3D-LGV.h
+	2. TreeDimLGV has two-dimensional matrix D of vector < Path >  (vector < vector < vector < Path > > >).
+	3. Calculate TreeDimLGV().LGV() as before, and D will be automatically filled
+	4. Then you can use PathSavingLGV().det(D) to calculate the needed vector < NPath > 
+
+	see examples in "checkPathSavingLGV.cpp"
+	
+	no need to include anything, everything is already included in "3D-LGV.h"
+*/
+
 /*  *** struct PathSavingLGV *** 
 	Is Used to calculate Lindstrom-Gessel-Vienot Lemma with saving each path in the lattice
 
@@ -10,8 +25,6 @@
 	
 */
 
-#define PathRow vector < vector < Path > > 
-#define PathMatrix vector < vector < vector < Path > > > 
 
 struct PathSavingLGV
 {
