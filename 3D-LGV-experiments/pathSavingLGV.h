@@ -10,6 +10,7 @@
 	
 */
 
+#define PathRow vector < vector < Path > > 
 #define PathMatrix vector < vector < vector < Path > > > 
 
 struct PathSavingLGV
