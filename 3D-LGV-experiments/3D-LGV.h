@@ -3,7 +3,9 @@ static const int WALL = 1;
 static const int DOOR = 2;
 static const int K = 10;
 
-//put it here from experiments.h
+static const bool WONNASAVEPATH = true; // turn true if you want to use pathSavingLGV
+
+//I've put it here from experiments.h
 int MAXP = 3; // max lam part
 int MAX_X = 3; // number of x-vars (height)
 int MAX_Z = 2; // number of z-vars (width)
@@ -27,6 +29,9 @@ struct Edge
     }
 };
 
+#include "3D-LGV-N-paths.h"
+#include "pathSavingLGV.h"
+
 struct Paths
 {
     int fx, fy, fz;
@@ -35,6 +40,11 @@ struct Paths
     Polynomial res;
     map < int, int > character;
     vector <Edge > path;
+
+    int sx, sy, sz;
+    vector < Polynomial > weights;
+    
+    vector < Path > vectorPath;
 
     Paths () {}
 
@@ -61,6 +71,20 @@ struct Paths
                 dfs1(tx, ty, tz);
         }
     }
+
+    void updateVectorPath()
+    {
+    	assert(WONNASAVEPATH);
+    	assert((int)path.size() == (int)weights.size());
+
+    	Path curPath(sx, sy, sz);
+    	for (int i = 0; i < (int)path.size(); i++)
+    	{
+    		curPath.addEdge(path[i], weights[i]);
+		}
+		vectorPath.pb(curPath);
+    }
+
     int tab = 0;
     void dfs2(int x, int y, int z)
     {
@@ -74,6 +98,9 @@ struct Paths
             // cerr << "added: ";
             // for (auto [id, deg] : character) cerr << id << ' ' << deg << ", "; cerr << "\n";
             res.add(character, 1);
+
+            if (WONNASAVEPATH)
+            	updateVectorPath();
             return;
         }
         for (auto it : e)
@@ -93,6 +120,10 @@ struct Paths
                 else if (it.type == DOOR)
                     id = it.firstID + x;
                 character[id]++;
+                
+                if (WONNASAVEPATH)
+                	weights.pb(Xpower(id, 1));
+                
                 path.pb(it);
                 tab++;
                 dfs2(x + it.dx, y + it.dy, z + it.dz);
@@ -101,14 +132,23 @@ struct Paths
                 if (character[id] == 0)
                     character.erase(id);
                 path.pop_back();
+
+                if (WONNASAVEPATH)
+                	weights.pop_back();
             }
             else
             {
+            	if (WONNASAVEPATH)
+            		weights.pb(Polynomial(1));
+                
                 path.pb(it);
                 tab++;
                 dfs2(x + it.dx, y + it.dy, z + it.dz);
                 tab--;
                 path.pop_back();
+                
+                if (WONNASAVEPATH)
+                	weights.pop_back();
             }
         }
     }
@@ -123,12 +163,27 @@ Polynomial W(int x1, int y1, int z1, int x2, int y2, int z2, const vector < Edge
     return P.res;
 }
 
+Polynomial Wmodified(int x1, int y1, int z1, int x2, int y2, int z2, const vector < Edge > & e, vector < Path > &vp)
+{
+	assert(WONNASAVEPATH);    
+
+    Paths P(x2, y2, z2, e);
+    P.sx = x1, P.sy = y1, P.sz = z1;
+
+    P.dfs1(x2, y2, z2);
+    P.dfs2(x1, y1, z1);
+    P.res.normalize();
+    vp = P.vectorPath;
+    return P.res;
+}
+
 struct TreeDimLGV
 {
     vector < Edge > e;
     vector < int > Ax, Ay, Az;
     vector < int > Bx, By, Bz;
     vector < vector < Polynomial > > A;
+	PathMatrix D;
 
     void addEdge(int dx, int dy, int dz, int type, bool isWeighted, int firstID)
     {
@@ -183,8 +238,47 @@ struct TreeDimLGV
         return res;
     }
 
+    Polynomial LGVmodified()
+    {
+    	assert(WONNASAVEPATH);
+    	int n = (int)Ax.size();
+    	D = PathMatrix(n, PathRow(n));
+        vector < vector < Polynomial > > A(n, vector < Polynomial > (n));
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                A[i][j] = Wmodified(Ax[i], Ay[i], Az[i], Bx[j], By[j], Bz[j], e, D[i][j]);
+            }
+        }
+        /*cout << "!!!" << endl;
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+                cout << A[i][j].p.size() << ' ';
+            cout << endl;
+        }*/
+        for (int i = 0; i < n; i++, cout << endl)
+		{
+			for (int j = 0; j < n; j++, cout << endl)
+			{
+				cout << i << " --> " << j << endl;
+				for (auto it : D[i][j])
+				{
+					it.print();
+					it.weight.print();		
+				}
+			}
+		}        
+        return det(A);
+    }
+
     Polynomial LGV()
     {
+    	if (WONNASAVEPATH)
+    	{
+    		return LGVmodified();
+        }
         int n = (int)Ax.size();
         vector < vector < Polynomial > > A(n, vector < Polynomial > (n));
         for (int i = 0; i < n; i++)
