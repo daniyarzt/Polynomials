@@ -66,6 +66,21 @@ struct Polynomial
         return a;
     }
 
+    ll getCoef(Polynomial monome) 
+    {
+    	normalize();
+    	monome.normalize();
+    	
+    	if ((int)monome.p.size() != 1)
+    	{
+    		cerr << "getCoef: argument must be a monome!" << endl;
+			assert(false);
+    	}
+    	map < int, int > character = (*monome.p.begin()).first;
+    	
+    	return p[character];	
+    }
+
     void print()
     {
         for (auto it : p)
@@ -243,6 +258,7 @@ struct Polynomial
         p = np; // :)
         normalize();
     }
+
 };
 
 Polynomial Xpower(int id, int pwr)
