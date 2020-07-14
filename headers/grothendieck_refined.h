@@ -11,6 +11,8 @@ struct Grothendieck_refined
     int M, n;
     vector < vector < int > > a;
     vector < pair < int, int > > cells;
+    bool WONNAGETRPPS = false;
+    vector < vector < vector < int > > > rpps;
 
     Grothendieck_refined () {}
 
@@ -90,6 +92,8 @@ struct Grothendieck_refined
             ans.add(character, 1);
             if (WONNAPRINT)
                 print(character);
+			if (WONNAGETRPPS)
+				rpps.pb(a);
             return;
         }
         int x = cells[id].first;
@@ -129,4 +133,12 @@ Polynomial grothendieck_refined(string lambda, string mu, int m)
 {
     Grothendieck_refined G(lambda, mu, m);
     return G.solve();
+}
+
+vector < vector < vector < int > > > getRPPs(string lambda, string mu, int n)
+{
+	Grothendieck_refined G(lambda, mu, n);
+	G.WONNAGETRPPS = true;
+	G.solve();
+	return G.rpps;
 }
