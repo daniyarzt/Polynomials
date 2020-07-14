@@ -28,10 +28,19 @@ struct E
         rec(i + 1, k);
     }
 };
+
 Polynomial e(vector < int > _argv, int k)
 {
     E res(_argv);
     if (k >= 0)
         res.rec(0, k);
     return res.ans;
+}
+
+Polynomial e(vector < int > _argv, string lambda)
+{
+	Polynomial res(1);
+	for (int i = 0; i < (int)lambda.size(); i++)
+		res *= e(_argv, lambda[i] - '0');
+	return res;
 }
