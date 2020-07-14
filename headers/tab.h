@@ -77,3 +77,16 @@ void reduce(vector < vector < int > > & a)
 				a[i][j] = -1;
 }
 
+map < int, int > tableauWeight(const vector < vector < int > > & a)
+{
+	map < int, int > character;
+	for (int i = 0; i < (int)a.size(); i++)
+	{
+		for (int j = 0; j < (int)a[i].size(); j++)
+		{
+			if (i == 0 || a[i][j] != a[i - 1][j])
+				character[a[i][j]]++;
+		}
+	}
+	return character;
+}
