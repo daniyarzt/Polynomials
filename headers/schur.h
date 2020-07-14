@@ -1,79 +1,46 @@
-struct Schur
+
+struct E
 {
-    vector < vector < int > > A;
-    string lambda, mu;
-    int n;
-    vector < pair < int, int > > pts;
-    Polynomial res;
+    map < int, int > character;
+    vector < int > argv;
+    Polynomial ans;
 
-    Polynomial w()
-    {
-        Polynomial cur = Polynomial(1);
-        for (int i = 1; i <= n; i++)
-        {
-            int degree = 0;
-            for (int y = 0; y < lambda[0] - '0'; y++)
-            {
-                bool found = false;
-                for (int x = 0; x < (int)lambda.size() && lambda[x] - '0' > y; x++)
-                {
-                    if (A[x][y] == i)
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-                degree += found;
-            }
-            cur *= Xpower(i, degree);
-        }
-        return cur;
-    }
+    E() {}
 
-    void rec(int id)
+    E(vector < int > _argv):argv(_argv) {}
+
+    void rec(int i, int k)
     {
-        if (id == (int)pts.size())
+        if (k > (int)argv.size() - i)
+            return;
+        if (i == (int)argv.size())
         {
-            res += w();
+            assert(k == 0);
+            ans.add(character, 1);
             return;
         }
-        int x = pts[id].first;
-        int y = pts[id].second;
-        int min_val = 1;
-        if (x > 0 && A[x - 1][y] != -1)
-            min_val = A[x - 1][y] + 1;
-        if (y > 0 && A[x][y - 1] != -1)
-            min_val = max(min_val, A[x][y - 1]);
-        for (int i = min_val; i <= n; i++)
+        if (k > 0)
         {
-            A[x][y] = i;
-            rec(id + 1);
+            character[argv[i]]++;
+            rec(i + 1, k - 1);
+            character.erase(argv[i]);
         }
-    }
-
-    Polynomial sol(string _lambda, string _mu, int _n)
-    {
-        lambda = _lambda, mu = _mu;
-        n = _n;
-        while((int)mu.size() < (int)lambda.size())
-            mu += '0';
-        A = vector < vector < int > > ((int)lambda.size());
-        for (int i = 0; i < (int)lambda.size(); i++)
-        {
-            A[i] = vector < int > (lambda[i] - '0');
-            for (int j = 0; j < mu[i] - '0'; j++)
-                    A[i][j] = -1;
-            for (int j = mu[i] - '0'; j < lambda[i] - '0'; j++)
-                pts.pb({i, j});
-        }
-        rec(0);
-        return res;
+        rec(i + 1, k);
     }
 };
 
-
-Polynomial s(string lambda, string mu, int n)
+Polynomial e(vector < int > _argv, int k)
 {
-    Schur str;
-    return str.sol(lambda, mu, n);
+    E res(_argv);
+    if (k >= 0)
+        res.rec(0, k);
+    return res.ans;
+}
+
+Polynomial e(vector < int > _argv, string lambda)
+{
+	Polynomial res(1);
+	for (int i = 0; i < (int)lambda.size(); i++)
+		res *= e(_argv, lambda[i] - '0');
+	return res;
 }
