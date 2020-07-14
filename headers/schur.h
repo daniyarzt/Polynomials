@@ -1,46 +1,91 @@
-
-struct E
+struct Schur
 {
-    map < int, int > character;
-    vector < int > argv;
-    Polynomial ans;
+    vector < vector < int > > A;
+    string lambda, mu;
+    int n;
+    vector < pair < int, int > > pts;
+    Polynomial res;
+    bool WONNAGETSSYTS = false;
+    vector < vector < vector < int > > > SSYTS;
 
-    E() {}
-
-    E(vector < int > _argv):argv(_argv) {}
-
-    void rec(int i, int k)
+    Polynomial w()
     {
-        if (k > (int)argv.size() - i)
-            return;
-        if (i == (int)argv.size())
+        Polynomial cur = Polynomial(1);
+        for (int i = 1; i <= n; i++)
         {
-            assert(k == 0);
-            ans.add(character, 1);
+            int degree = 0;
+            for (int y = 0; y < lambda[0] - '0'; y++)
+            {
+                bool found = false;
+                for (int x = 0; x < (int)lambda.size() && lambda[x] - '0' > y; x++)
+                {
+                    if (A[x][y] == i)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                degree += found;
+            }
+            cur *= Xpower(i, degree);
+        }
+        return cur;
+    }
+
+    void rec(int id)
+    {
+        if (id == (int)pts.size())
+        {
+        	if (WONNAGETSSYTS)
+        		SSYTS.pb(A);
+            res += w();
             return;
         }
-        if (k > 0)
+        int x = pts[id].first;
+        int y = pts[id].second;
+        int min_val = 1;
+        if (x > 0 && A[x - 1][y] != -1)
+            min_val = A[x - 1][y] + 1;
+        if (y > 0 && A[x][y - 1] != -1)
+            min_val = max(min_val, A[x][y - 1]);
+        for (int i = min_val; i <= n; i++)
         {
-            character[argv[i]]++;
-            rec(i + 1, k - 1);
-            character.erase(argv[i]);
+            A[x][y] = i;
+            rec(id + 1);
         }
-        rec(i + 1, k);
+    }
+
+    Polynomial sol(string _lambda, string _mu, int _n)
+    {
+        lambda = _lambda, mu = _mu;
+        n = _n;
+        while((int)mu.size() < (int)lambda.size())
+            mu += '0';
+        A = vector < vector < int > > ((int)lambda.size());
+        for (int i = 0; i < (int)lambda.size(); i++)
+        {
+            A[i] = vector < int > (lambda[i] - '0');
+            for (int j = 0; j < mu[i] - '0'; j++)
+                    A[i][j] = -1;
+            for (int j = mu[i] - '0'; j < lambda[i] - '0'; j++)
+                pts.pb({i, j});
+        }
+        rec(0);
+        return res;
     }
 };
 
-Polynomial e(vector < int > _argv, int k)
+
+Polynomial s(string lambda, string mu, int n)
 {
-    E res(_argv);
-    if (k >= 0)
-        res.rec(0, k);
-    return res.ans;
+    Schur str;
+    return str.sol(lambda, mu, n);
 }
 
-Polynomial e(vector < int > _argv, string lambda)
+vector < vector < vector < int > > > getSSYTs(string lambda, string mu, int n)
 {
-	Polynomial res(1);
-	for (int i = 0; i < (int)lambda.size(); i++)
-		res *= e(_argv, lambda[i] - '0');
-	return res;
+	Schur str;
+	str.WONNAGETSSYTS = true;
+	str.sol(lambda, mu, n);
+	return str.SSYTS;
 }
