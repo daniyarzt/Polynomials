@@ -10,6 +10,7 @@
 #include "headers/homogenous.h"
 #include "headers/generate-partitions.h"
 #include "headers/tab.h"
+#include "headers/shrink_transformation.h"
 
 #include "G-expansion-experiment/grothendieck_expansion.h"
 
