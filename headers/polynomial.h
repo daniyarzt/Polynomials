@@ -66,6 +66,11 @@ struct Polynomial
         return a;
     }
 
+    ll getCoef(map < int, int > character)
+    {
+    	return p[character];
+    }
+
     ll getCoef(Polynomial monome) 
     {
     	normalize();
