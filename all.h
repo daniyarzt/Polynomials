@@ -9,9 +9,11 @@
 #include "headers/schur.h"
 #include "headers/homogenous.h"
 #include "headers/generate-partitions.h"
+#include "headers/tab.h"
 
 #include "G-expansion-experiment/grothendieck_expansion.h"
 
 #include "3D-LGV-experiments/3D-LGV.h"
 #include "3D-LGV-experiments/experiments.h"
 
+#include "Symmetric-Equivalence-problem/JDT-plus-insert-algorithm.h"
