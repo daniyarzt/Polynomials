@@ -69,3 +69,11 @@ void normalize(vector < vector < int > > & a)
 	}
 }
 
+void reduce(vector < vector < int > > & a)
+{
+	for (int i = 0; i < (int)a.size() - 1; i++)
+		for (int j = 0; j < (int)a[i + 1].size(); j++)
+			if (a[i][j] == a[i + 1][j])
+				a[i][j] = -1;
+}
+
