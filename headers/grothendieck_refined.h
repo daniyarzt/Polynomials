@@ -110,9 +110,12 @@ struct Grothendieck_refined
         n = (int)lambda.size();
         while((int)mu.size() < n)
             mu += '0';
-        a = vector < vector < int > > (n, vector < int > (lambda[0] - '0'));
+        a = vector < vector < int > > (n);
         for (int i = 0; i < n; i++)
         {
+        	a[i] = vector < int > (lambda[i] - '0');
+        	for (int j = 0; j < mu[i] - '0'; j++)
+        		a[i][j] = -1;
             for (int j = mu[i] - '0'; j < lambda[i] - '0'; j++)
                 cells.pb({i, j});
         }
