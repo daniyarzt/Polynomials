@@ -11,10 +11,11 @@
 #include "headers/generate-partitions.h"
 #include "headers/tab.h"
 #include "headers/shrink_transformation.h"
+#include "headers/generalized_dual_grothendieck_polynomial.h"
 
 #include "G-expansion-experiment/grothendieck_expansion.h"
 
-#include "3D-LGV-experiments/3D-LGV.h"
-#include "3D-LGV-experiments/experiments.h"
+//#include "3D-LGV-experiments/3D-LGV.h"
+//#include "3D-LGV-experiments/experiments.h"
 
 #include "Symmetric-Equivalence-problem/JDT-plus-insert-algorithm.h"
