@@ -53,16 +53,18 @@ struct Generalized_dual_grothendieck_polynomial
 
     map < int, int > getCharacter()
     {
-        vector < int > c(M + 1);
+    	vector < int > c(M + 1);
         vector < int > d(n);
         vector < vector < bool > > used(M + 1, vector < bool > (lambda[0] - '0'));
         for (int i = 0; i < (int)cells.size(); i++)
         {
             int x = cells[i].first;
-            int y = cells[i].second;
+            int y = cells[i].second; 
             used[a[x][y]][y] = true;
-            if (x == n - 1 || a[x][y] != a[x + 1][y])
+            if (x == n - 1 || (x < (int)a.size() - 1 && y < (int)a[x + 1].size() && a[x][y] != a[x + 1][y]))
+            {
                 d[x]++;
+        	}
         }
         forn(i, M)
         {
