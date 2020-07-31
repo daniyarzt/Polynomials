@@ -32,14 +32,19 @@ struct Polynomial
     }
     void normalize()
     {
-        map < map < int, int >, ll > q;
+    	map < map < int, int >, ll > q;
         for (auto it : p)
         {
             if (it.second == 0)
                 continue;
-            q[normalize(it.first)] += it.second;
+			map < int, int > character = normalize(it.first);
+            q[character] += it.second;
         }
-        p = q;
+        map < map < int, int >, ll > qq;
+        for (auto it : q)
+        	if (it.second != 0)
+        		qq.insert(it);        
+        p = qq;
     }
 
     void add(map < int, int > character, ll val)
@@ -296,7 +301,7 @@ struct Polynomial
 
     bool operator == (Polynomial q)
     {
-        normalize();
+    	normalize();
         q.normalize();
         return p == q.p;
     }
