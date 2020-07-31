@@ -158,6 +158,61 @@ struct Polynomial
         }
     }
 
+    void monomialPrint(int M)
+    {
+    	normalize();
+    	if (p.empty())
+		{
+			cout << 0 << endl;
+			return;
+		}
+		map < string, bool > used;	
+		for (auto it : p)
+        {
+        	string part;
+        	for (auto q : it.first)
+        	{
+        		if (q.first <= M)
+        		{
+        			part += char(q.second + '0');
+        		}
+        	}
+        	sort(part.begin(), part.end());
+        	reverse(part.begin(), part.end());
+        	if (used.count(part))
+        		continue;
+			used[part] = true;
+            cout << "\t";
+            cout << it.second;
+            cout << " * (";
+            int cnt = 0;
+            for (auto q : it.first)
+            {
+            	if (q.first > M)
+            	{
+                	if (cnt > 0)
+                    	cout << ",";
+            		cnt++;
+                	cout << q.first;
+                }
+            }      	
+            cout << ")^(";
+            cnt = 0;
+            for (auto q : it.first)
+            {
+            	if (q.first > M)
+            	{
+                	if (cnt > 0)
+                	    cout << ",";
+            		cnt++;
+                	cout << q.second;
+                }
+            }
+            cout << ") * m_{" << part << "}" << endl;
+        }
+
+    }
+
     bool isSymmetric(int i, int j)
     {
         normalize();
