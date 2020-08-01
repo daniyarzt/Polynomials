@@ -93,6 +93,7 @@ struct Polynomial
 
     void print()
     {
+    	normalize();
         for (auto it : p)
         {
             cout << "\t";
@@ -171,22 +172,27 @@ struct Polynomial
 			cout << 0 << endl;
 			return;
 		}
-		map < string, bool > used;	
+		map < pair < string, map < int, int > >, bool > used;	
 		for (auto it : p)
         {
         	string part;
+			map < int, int > ch;
         	for (auto q : it.first)
         	{
         		if (q.first <= M)
         		{
         			part += char(q.second + '0');
         		}
+        		else
+        		{
+        			ch[q.first] += q.second;
+        		}
         	}
         	sort(part.begin(), part.end());
         	reverse(part.begin(), part.end());
-        	if (used.count(part))
+        	if (used.count(make_pair(part, ch)))
         		continue;
-			used[part] = true;
+			used[make_pair(part, ch)] = true;
             cout << "\t";
             cout << it.second;
             cout << " * (";
@@ -198,7 +204,7 @@ struct Polynomial
                 	if (cnt > 0)
                     	cout << ",";
             		cnt++;
-                	cout << q.first;
+                	cout << q.first - M;
                 }
             }      	
             cout << ")^(";
