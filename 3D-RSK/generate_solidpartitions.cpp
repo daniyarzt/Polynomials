@@ -159,24 +159,137 @@ ll corner_hook_volume(mat3d A)
 	return vol;
 }
 
+ll ch1(mat3d A)
+{
+	int x_len = A.size();
+	int y_len = A[0].size();
+	int z_len = A[0][0].size();
+
+	ll vol = 0;
+	for (int i = 0; i < x_len; i++)
+	{
+		for (int j = 0; j < y_len; j++)
+		{
+			for (int k = 0; k < z_len; k++)
+			{
+				ll mx = 0;
+				if (i < x_len - 1)
+					mx = max(A[i + 1][j][k], mx);
+				if (j < y_len - 1)	
+					mx = max(A[i][j + 1][k], mx);
+				if (k < z_len - 1)
+					mx = max(A[i][j][k + 1], mx);
+				vol += (A[i][j][k] - mx) * (i + 1);
+			}
+		}
+	}
+	return vol;
+}
+
+ll ch2(mat3d A)
+{
+	int x_len = A.size();
+	int y_len = A[0].size();
+	int z_len = A[0][0].size();
+
+	ll vol = 0;
+	for (int i = 0; i < x_len; i++)
+	{
+		for (int j = 0; j < y_len; j++)
+		{
+			for (int k = 0; k < z_len; k++)
+			{
+				ll mx = 0;
+				if (i < x_len - 1)
+					mx = max(A[i + 1][j][k], mx);
+				if (j < y_len - 1)	
+					mx = max(A[i][j + 1][k], mx);
+				if (k < z_len - 1)
+					mx = max(A[i][j][k + 1], mx);
+				vol += (A[i][j][k] - mx) * (j + 1);
+			}
+		}
+	}
+	return vol;
+}
+
+ll ch3(mat3d A)
+{
+	int x_len = A.size();
+	int y_len = A[0].size();
+	int z_len = A[0][0].size();
+
+	ll vol = 0;
+	for (int i = 0; i < x_len; i++)
+	{
+		for (int j = 0; j < y_len; j++)
+		{
+			for (int k = 0; k < z_len; k++)
+			{
+				ll mx = 0;
+				if (i < x_len - 1)
+					mx = max(A[i + 1][j][k], mx);
+				if (j < y_len - 1)	
+					mx = max(A[i][j + 1][k], mx);
+				if (k < z_len - 1)
+					mx = max(A[i][j][k + 1], mx);
+				vol += (A[i][j][k] - mx) * (k + 1);
+			}
+		}
+	}
+	return vol;
+}
+
+ll ch_count(mat3d A)
+{
+	int x_len = A.size();
+	int y_len = A[0].size();
+	int z_len = A[0][0].size();
+
+	ll vol = 0;
+	for (int i = 0; i < x_len; i++)
+	{
+		for (int j = 0; j < y_len; j++)
+		{
+			for (int k = 0; k < z_len; k++)
+			{
+				ll mx = 0;
+				if (i < x_len - 1)
+					mx = max(A[i + 1][j][k], mx);
+				if (j < y_len - 1)	
+					mx = max(A[i][j + 1][k], mx);
+				if (k < z_len - 1)
+					mx = max(A[i][j][k + 1], mx);
+				vol += (A[i][j][k] - mx);
+			}
+		}
+	}
+	return vol;
+}
+
 int main() 
 {
 	ofstream myfile;
-	for (int n = 1; n <= 20; n++)
+	for (int n = 1; n <= 24; n++)
 	{
-		myfile.open("n=" + to_string(n) + "ch-volumes.csv");		
+		myfile.open("fixed-volume-plane-partition-semi-corner-hook-volume/n=" + to_string(n) + "ch-volumes.csv");		
 
-		SolidPartitionGenerator	gen(n, n, n, n);
+		SolidPartitionGenerator	gen(1, n, n, n);
 		auto A = gen.getNext();
 		int cnt = 0;
+		vector < int > c(n + 1);
 		while(!A.empty())
 		{	
 			//mat3dprint(A);
-			myfile << corner_hook_volume(A) << "\n";
+			//myfile << corner_hook_volume(A) << "\n";
+			c[ch2(A)]++;
+			assert(corner_hook_volume(A) == ch1(A) + ch2(A) + ch3(A) - 2 * ch_count(A));
 			A = gen.getNext();
 			cnt++;
 
 		}
+		for (int i = 0; i < (int)c.size(); i++)
+			myfile << i << ' ' << c[i] << '\n';
 		cout << cnt <<endl;
 		myfile.close();
 	}
