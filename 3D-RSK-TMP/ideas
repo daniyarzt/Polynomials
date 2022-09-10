@@ -1,0 +1,13 @@
+- Write inverse algorithm [DONE]
+- diagonal sums 
+- perhaps we could prove that all 3d algorithms with toggle fail, well, with our specific toggle 
+
+- move ppartition to the library 
+- write bruteforce for partitions! -> write it as a iterator so you don't store all of them in memory 
+
+
+- write Damir agai's version of RSK 
+
+- prove m(n) <= p(n)
+
+- look at the toogles and try incrementing a single element in the limit there is something 

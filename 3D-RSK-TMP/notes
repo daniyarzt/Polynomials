@@ -1,0 +1,36 @@
+- for a, b, c = 2 -> pi[1][1][1] = min(a[1][1][2], a[1][2][1], a[2][1][1])			
+					pi[1][1][2] = a[1][1][2] + a[1][1][1]
+					pi[1][2][1] = 
+					pi[2][1][1] = 
+					pi[2][2][1] = max(pi[1][2][1], pi[2][1][1]) + a[2][2][1]
+					pi[2][1][2] = 
+					pi[1][2][2] = 
+
+					a[2][2][2] = max(pi[2][2][1], pi[2][1][2], pi[1][2][2]) + a[2][2][2]
+
+					sum_over_pi = min(a[1][1][2], a[1][2][1], a[2][1][1]) + 7 * a[1][1][1] 
+									+ a[1][1][2] + a[1][2][1] + a[2][1][1] + 
+									+ max(a[1][2][1], a[1][1][2])
+									+ max(a[1][2][1], a[2][1][1])
+									+ max(a[1][1][2], a[2][1][1])
+									+ a[1][2][2] + a[2][1][2] + a[2][2][1]
+									+ max(max(a[1][2][1], a[1][1][2]) + 
+
+- for a, b, c = 2 -> sum_pi contains a[1][1][1] always with coeficient 7 
+- for a, b, c = 2, 2, 3 or 2, 3, 2 or 3, 2, 2 coef of a[1][1][1] = 0
+- for a, b, c = 3, 3, 2 or 2, 3, 3 or 3, 2, 3 coef of a[1][1][1] = 4
+- for a, b, c = 3, 3, 3 coef of a[1][1][1] = 9
+- for a, b, c = 4, 3, 3 coef of a[1][1][1] = 4
+- for a, b, c = 4, 4, 3 coef of a[1][1][1] = 0
+- for a, b, c = 4, 4, 4 coef of a[1][1][1] = 7
+- for a, b, c = 1, 1, 1 coef of a[1][1][1] = 1
+- for a, b, c = 1, 1, 2 coef of a[1][1][1] = 2
+- for a, b, c = 1, 2, 2 coef of a[1][1][1] = 4
+- for a, b, c = 5, 5, 5 coef of a[1][1][1] = 1
+- for a, b, c = 6, 6, 6 coef of a[1][1][1] = 1
+- for a, b, c = 7, 7, 7 coef of a[1][1][1] = 7
+- for a, b, c = 8, 8, 8 coef of a[1][1][1] = 9
+- for a, b, c = 9, 9, 9 coef of a[1][1][1] = 7
+- for a, b, c = 10, 10, 10 coef of a[1][1][1] = 1
+- for a, b, c = 11, 11, 11 coef of a[1][1][1] = 1
+- for a, b, c 
